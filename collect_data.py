@@ -52,7 +52,9 @@ def get_save_data(limit):
 
     # Save to csv
     if not (os.path.exists('pricing_data/all_coins')):
-        df_final.to_csv('pricing_data/all_coins/%s.csv'%(time.strftime("%Y-%m-%d")))
+        os.makedirs('pricing_data/all_coins')
+    
+    df_final.to_csv('pricing_data/all_coins/%s.csv'%(time.strftime("%Y-%m-%d")))
 
 
 if __name__=="__main__":

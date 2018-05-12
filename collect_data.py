@@ -37,7 +37,7 @@ def get_save_data(limit):
             if not (os.path.exists('pricing_data/each_coin/%s'%coin)):
                 os.makedirs('pricing_data/each_coin/%s/'%coin)
 
-            data.to_csv('pricing_data/each_coin/%s/initial_bulk_%s.csv'%(coin,time.strftime("%Y-%m-%d")))
+            data.to_csv('pricing_data/each_coin/%s/weekly_%s.csv'%(coin,time.strftime("%Y-%m-%d")))
 
             # Prefix col name with coin
             data.columns = [(coin + '_'+col) if col !="timestamp" else col for col in data.columns  ]
@@ -54,7 +54,7 @@ def get_save_data(limit):
     if not (os.path.exists('pricing_data/all_coins')):
         os.makedirs('pricing_data/all_coins')
     
-    df_final.to_csv('pricing_data/all_coins/initial_bulk_%s.csv'%(time.strftime("%Y-%m-%d")))
+    df_final.to_csv('pricing_data/all_coins/weekly_%s.csv'%(time.strftime("%Y-%m-%d")))
 
 
 if __name__=="__main__":

@@ -6,7 +6,7 @@ import os
 import pdb
 import sys 
 
-coins = ['BTC','ETH', 'BCH','LTC', 'EOS']
+coins = ['BTC','ETH', 'BCH','LTC', 'EOS', 'NEO','TRX', 'XRP', 'ADA', 'XLM','MIOTA', 'DASH','XMR','BCN','ETC','BNB','ICX','QTUM']
 
 def hourly_price_historical(symbol, comparison_symbol, limit=168, aggregate=1, exchange='binance'):
     url = 'https://min-api.cryptocompare.com/data/histohour?fsym={}&tsym={}&limit={}&aggregate={}'\

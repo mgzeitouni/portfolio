@@ -4,10 +4,11 @@ import requests
 import time
 import os
 import pdb
+import sys 
 
 coins = ['BTC','ETH', 'BCH','LTC', 'EOS']
 
-def hourly_price_historical(symbol, comparison_symbol, limit=24, aggregate=1, exchange='binance'):
+def hourly_price_historical(symbol, comparison_symbol, limit=168, aggregate=1, exchange='binance'):
     url = 'https://min-api.cryptocompare.com/data/histohour?fsym={}&tsym={}&limit={}&aggregate={}'\
             .format(symbol.upper(), comparison_symbol.upper(), limit, aggregate)
    
@@ -24,13 +25,13 @@ def hourly_price_historical(symbol, comparison_symbol, limit=24, aggregate=1, ex
     return df
 
 
-def get_save_data():
+def get_save_data(limit):
 
     dfs = []
 
     for coin in coins:
         try:
-            data = hourly_price_historical(coin,'USD')
+            data = hourly_price_historical(coin,'USD', limit)
 
             # Save to individual coins data
             if not (os.path.exists('pricing_data/each_coin/%s'%coin)):
@@ -55,4 +56,6 @@ def get_save_data():
 
 if __name__=="__main__":
 
-    get_save_data()
+    limit = sys.argv[1]
+
+    get_save_data(limit)

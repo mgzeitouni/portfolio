@@ -1,5 +1,0 @@
-binance_api_key = 'ShEUhsQ3QhIi0uUNngOB8Qhl86dMUNgyZWIaZ4FPzF9OvXcNY8MfuxndmB6PpOE5'
-binance_api_secret = 'cUvRL7x9gtRWqEodnBmRYd8ILcwT5IcIS3cz9pwbTfan14nOTdSIwzlW95YgCCWb'
-
-coinbase_api_key='BgUl0ebIOmI3ZolI'
-coinbase_api_secret='FDv0qh6FKQ1SV0xEmkzo1ReBTRomR18q'

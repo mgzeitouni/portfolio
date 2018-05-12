@@ -51,7 +51,8 @@ def get_save_data(limit):
     df_final = reduce(lambda left,right: pd.merge(left,right,on='timestamp'), dfs)
 
     # Save to csv
-    df_final.to_csv('pricing_data/all_coins/%s.csv'%(time.strftime("%Y-%m-%d")))
+    if not (os.path.exists('pricing_data/all_coins'):
+        df_final.to_csv('pricing_data/all_coins/%s.csv'%(time.strftime("%Y-%m-%d")))
 
 
 if __name__=="__main__":

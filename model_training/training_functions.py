@@ -19,14 +19,14 @@ loss='mse'
 
 def choose_params():
         
-    neurons = [0, 1500]   # 8     
+    neurons = [0, 750]   # 8     
     layers = [2,20]        
     activation_functions = ['relu','tanh'] # 3 
                    
     optimizer=['adam','sgd','rmsprop']    # 4
     dropout = [0,1]            # 6
     batch_size = [5,200]      # 7  
-    epochs = [10,50]                 # 6
+    epochs = [10,40]                 # 6
     input_window_len = [7,50]       # 6
     output_window_len = [2,10]    # 9 
     keep_order=[True,False]        # 2 

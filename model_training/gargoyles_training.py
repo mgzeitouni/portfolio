@@ -14,8 +14,8 @@ import sys
 
 from training_functions import *
 
-if __name__=="__main__":
-    
+def worker(sys):
+  
     if len(sys.argv) <2:
         print("First arg must be a coin")
         sys.exit()
@@ -109,3 +109,14 @@ if __name__=="__main__":
         except:
             print("Error with model")
             
+if __name__=="__main__":
+
+    num_threads = int(sys.argv[3])
+
+    threads = []
+    for i in range(num_threads):
+        t = threading.Thread(target=worker, args=(sys,))
+        threads.append(t)
+        t.start()
+
+  

@@ -5,9 +5,11 @@ attrs==17.4.0
 autobahn==18.4.1
 Automat==0.6.0
 backports.weakref==1.0.post1
+beautifulsoup4==4.6.0
 bleach==1.5.0
 boto3==1.7.15
 botocore==1.10.15
+bs4==0.0.1
 certifi==2018.4.16
 cffi==1.11.5
 chardet==3.0.4

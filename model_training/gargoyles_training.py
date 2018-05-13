@@ -22,7 +22,7 @@ def worker(sys):
         
     coin_predict = sys.argv[1]
     
-    if coin_predict not in ['BTC','ETC']:
+    if coin_predict not in ['BTC','ETH']:
         print("Invalid coin")
         sys.exit()
         

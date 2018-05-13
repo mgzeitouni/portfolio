@@ -101,7 +101,7 @@ def worker(sys):
             
             row = [neurons, layers, activation_function,optimizer, dropout, batch_size, epochs, input_window_len, output_window_len, keep_order,formatted_time, model_loss, val_loss, mae, val_mae]
             
-            with open("crypto_training.csv","a") as data_file:
+            with open("crypto_training_%s.csv"%coin_predict,"a") as data_file:
                 writer=csv.writer(data_file)
                 writer.writerow(row)
       

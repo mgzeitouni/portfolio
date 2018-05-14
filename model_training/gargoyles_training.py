@@ -95,7 +95,7 @@ def worker(sys):
             btc_model = build_model(X_train, 1, neurons, activation_function, dropout, loss, optimizer, layers)
             earlystop = keras.callbacks.EarlyStopping(monitor='val_loss',
                               min_delta=0,
-                              patience=2,
+                              patience=3,
                               verbose=0, mode='auto')
             callbacks_list = [earlystop]
             start = time.time()

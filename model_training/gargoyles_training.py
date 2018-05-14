@@ -56,7 +56,17 @@ def worker(sys):
             loss = 'mse' 
             
             neurons, layers, activation_function,optimizer, dropout, batch_size, epochs, input_window_len, output_window_len, keep_order = choose_params()
-    
+            epochs = 25
+            # neurons = 300
+            # layers = 20
+            # activation_function = 'relu'
+            # optimizer = 'adam'
+            # dropout=0.3
+            # batch_size=126
+            # epochs = 20
+            # input_window_len = 7
+            # output_window_len = 4
+            # keep_order = False
             print ("==============Start Model===============")
             print("Neurons: %s"%neurons)
             print("Layers: %s"%layers)
@@ -83,10 +93,14 @@ def worker(sys):
            # np.random.seed(202)
             # initialise model architecture
             btc_model = build_model(X_train, 1, neurons, activation_function, dropout, loss, optimizer, layers)
-            
+            earlystop = keras.callbacks.EarlyStopping(monitor='val_loss',
+                              min_delta=0,
+                              patience=2,
+                              verbose=0, mode='auto')
+            callbacks_list = [earlystop]
             start = time.time()
             # train model on data
-            btc_history = btc_model.fit(X_train, Y_train, epochs=epochs, batch_size=batch_size, verbose=1,validation_data=(X_test, Y_test), shuffle=False)
+            btc_history = btc_model.fit(X_train, Y_train, epochs=epochs, batch_size=batch_size, callbacks=callbacks_list, verbose=1,validation_data=(X_test, Y_test), shuffle=False)
             
             end = time.time()
             

@@ -57,16 +57,16 @@ def worker(sys):
             
             neurons, layers, activation_function,optimizer, dropout, batch_size, epochs, input_window_len, output_window_len, keep_order = choose_params()
             epochs = 25
-            neurons = 17
-            layers = 3
-            activation_function = 'relu'
-            optimizer = 'adam'
-            dropout=0.4
-            batch_size=80
-            epochs = 10
-            input_window_len = 7
-            output_window_len = 2
-            keep_order = False
+            # neurons = 17
+            # layers = 3
+            # activation_function = 'relu'
+            # optimizer = 'adam'
+            # dropout=0.4
+            # batch_size=80
+            # epochs = 10
+            # input_window_len = 7
+            # output_window_len = 2
+            # keep_order = False
             print ("==============Start Model===============")
             print("Neurons: %s"%neurons)
             print("Layers: %s"%layers)

@@ -59,7 +59,7 @@ def worker(sys):
             epochs = 25
             # neurons = 17
             # layers = 3
-            # activation_function = 'relu'
+            activation_function = 'relu'
             # optimizer = 'adam'
             # dropout=0.4
             # batch_size=80

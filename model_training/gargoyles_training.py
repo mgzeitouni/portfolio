@@ -15,7 +15,7 @@ import sys
 from training_functions import *
 
 def worker(sys):
-  
+    
     if len(sys.argv) <2:
         print("First arg must be a coin")
         sys.exit()
@@ -45,27 +45,27 @@ def worker(sys):
     samples = np.random.choice(len(data), int(math.floor(training_size * len(data))), replace=False)
     
     if sys.argv[2] == 'new_csv':
-        with open("crypto_training_%s.csv" %coin_predict,"wb") as data_file:
+        with open("crypto_training_rmse_%s.csv" %coin_predict,"wb") as data_file:
             writer=csv.writer(data_file)
             writer.writerow(["neurons",	"layers",	"activation_function",	"optimizer",	"dropout",	"batch_size",	"epochs",	"input_window_len",	"output_window_len",	"keep_order",	"elapsed_time",	"loss",	"val_loss",	"mae",	"val_mae"])
             
     while(True):
         
-        try:
+        # try:
         
             loss = 'mse' 
             
             neurons, layers, activation_function,optimizer, dropout, batch_size, epochs, input_window_len, output_window_len, keep_order = choose_params()
             epochs = 25
-            # neurons = 300
-            # layers = 20
+            # neurons = 17
+            # layers = 3
             # activation_function = 'relu'
             # optimizer = 'adam'
-            # dropout=0.3
-            # batch_size=126
-            # epochs = 20
+            # dropout=0.4
+            # batch_size=80
+            # epochs = 10
             # input_window_len = 7
-            # output_window_len = 4
+            # output_window_len = 2
             # keep_order = False
             print ("==============Start Model===============")
             print("Neurons: %s"%neurons)
@@ -79,8 +79,8 @@ def worker(sys):
             print("Output Window Len: %s"%output_window_len)
             print("Keep Order: %s"%keep_order)
             
-            X_train, X_test = create_inputs(data, keep_order, samples,input_window_len, output_window_len )
-            X_train, X_test = to_array(X_train), to_array(X_test)
+            X_train, X_test = create_inputs(data, keep_order, samples,input_window_len, output_window_len, prediction=False)
+            X_train, X_test = to_array(X_train, prediction=False), to_array(X_test, prediction=False)
             
                 
             Y_train, Y_test = create_outputs(data,samples,keep_order, coin_predict,input_window_len, output_window_len)
@@ -115,22 +115,38 @@ def worker(sys):
             
             row = [neurons, layers, activation_function,optimizer, dropout, batch_size, epochs, input_window_len, output_window_len, keep_order,formatted_time, model_loss, val_loss, mae, val_mae]
             
-            with open("crypto_training_%s.csv"%coin_predict,"a") as data_file:
+            with open("crypto_training_rmse_%s.csv"%coin_predict,"a") as data_file:
                 writer=csv.writer(data_file)
                 writer.writerow(row)
       
             print ("==============End Model===============")
-        except:
-            print("Error with model")
+        
+           # predict(btc_model)
+            # serialize model to JSON
+            # model_json = btc_model.to_json()
+            # with open("model.json", "w") as json_file:
+            #     json_file.write(model_json)
+            # # serialize weights to HDF5
+            # btc_model.save_weights("model.h5")
+            # print("Saved model to disk")
+
+        # except:
+        #     print("Error with model")
             
 if __name__=="__main__":
+    
+   num_threads = int(sys.argv[3])
 
-    num_threads = int(sys.argv[3])
+   threads = []
+   for i in range(num_threads):
+       t = threading.Thread(target=worker, args=(sys,))
+       threads.append(t)
+       t.start()
+    
+    #worker(sys)
+    #X_predict = predict()
+    
 
-    threads = []
-    for i in range(num_threads):
-        t = threading.Thread(target=worker, args=(sys,))
-        threads.append(t)
-        t.start()
+    
 
   

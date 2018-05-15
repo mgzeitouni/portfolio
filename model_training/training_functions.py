@@ -11,6 +11,7 @@ import datetime
 import time
 import random
 import threading
+import pdb
 
 merge_date = '2014-01-01'
 training_size = 0.85
@@ -42,25 +43,6 @@ def choose_params():
     out = random.randint(output_window_len[0],output_window_len[1])
     k = random.choice(keep_order)
             
-#        x= str(n)
-#    
-#        x="%s#%s"%(x,a)
-#        x="%s#%s"%(x,o)
-#        x="%s#%s"%(x,d)
-#        x="%s#%s"%(x,b)
-#        x="%s#%s"%(x,e)
-#        x="%s#%s"%(x,i)
-#        x="%s#%s"%(x,out)
-#        x="%s#%s"%(x,k)
-#
-#        print(x)
-#       
-    #    used_params = pickle.load(open("params.p",'rb'))
-
-    #    if x not in used_params:
-    #        used_params[x]=1
-    #        pickle.dump( used_params, open( "params.p", "wb" ) )
-    #        found=True
     
         
     return n,l,a,o,d,b,e,i,out,k
@@ -78,6 +60,7 @@ def get_market_data(market, tag=True):
   """
   market_data = pd.read_html("https://coinmarketcap.com/currencies/" + market + 
                              "/historical-data/?start=20130428&end="+time.strftime("%Y%m%d"), flavor='html5lib')[0]
+
   market_data = market_data.assign(Date=pd.to_datetime(market_data['Date']))  
   market_data['Volume'] = (pd.to_numeric(market_data['Volume'], errors='coerce').fillna(0))
   if tag:
@@ -149,7 +132,7 @@ def split_data(data, training_size=0.8):
   return train_set, test_set
 
 
-def create_inputs(data, keep_order, samples,input_window_len, output_window_len, coins=['BTC', 'ETH'] ):
+def create_inputs(data, keep_order, samples,input_window_len, output_window_len, coins=['BTC', 'ETH'], prediction =False):
   """
   data: pandas DataFrame, this could be either training_set or test_set
   coins: coin datas which will be used as the input. Default is 'btc', 'eth'
@@ -159,30 +142,39 @@ def create_inputs(data, keep_order, samples,input_window_len, output_window_len,
   """
   norm_cols = [coin + metric for coin in coins for metric in ['_Close', '_Volume']]
   inputs = []
-  for i in range(len(data) - input_window_len):
+  k=0
+  if prediction:
+      k=1
+      
+  for i in range(len(data) - input_window_len+k):
     temp_set = data[i:(i + input_window_len)].copy()
     inputs.append(temp_set)
     for col in norm_cols:
-       inputs[i].loc[:, col] = inputs[i].loc[:, col] / inputs[i].loc[:, col].iloc[0] - 1  
+      inputs[i].loc[:, col] = inputs[i].loc[:, col] / inputs[i].loc[:, col].iloc[0] - 1  
   
   all_inputs = inputs[:-output_window_len]
   train_set = []
   test_set = []
   
-  if keep_order:
+  if prediction:
+    return inputs[-1]
 
-      train_set = all_inputs[:(int(training_size*len(data)))]
-      test_set = all_inputs[(int(training_size*len(data))):]
   else:
-  
-      for number in np.arange(len(all_inputs)):
-         
-          if number in samples:
-              train_set.append( all_inputs[number])
-          else:
-              test_set.append(all_inputs[number])
-              
-  return train_set, test_set
+    if keep_order:
+
+        train_set = all_inputs[:(int(training_size*len(data)))]
+        test_set = all_inputs[(int(training_size*len(data))):]
+    else:
+    
+        for number in np.arange(len(all_inputs)):
+          
+            if number in samples:
+                train_set.append( all_inputs[number])
+            else:
+                test_set.append(all_inputs[number])
+    
+
+    return train_set, test_set
 
 
 def create_outputs(data, samples, keep_order, coin, input_window_len, output_window_len):
@@ -214,13 +206,16 @@ def create_outputs(data, samples, keep_order, coin, input_window_len, output_win
           
   return train_set, test_set
 
-def to_array(data):
+def to_array(data, prediction):
   """
   data: DataFrame
   This function will convert list of inputs to a numpy array
   Return: numpy array
   """
-  x = [np.array(data[i]) for i in range (len(data))]
+  if prediction:
+    x = [np.array(data)]
+  else: 
+    x = [np.array(data[i]) for i in range (len(data))]
   return np.array(x)
 
 def show_plot(data, tag):
@@ -277,7 +272,11 @@ def plot_results(history, model, Y_target, coin):
     label.set_visible(False)
 
   plt.show()
-  
+
+def root_mean_squared_error(y_true, y_pred):
+  from keras import backend as K
+  return K.sqrt(K.mean(K.square(y_pred - y_true), axis=-1)) 
+
 def build_model(inputs, output_size, neurons, activation_function, dropout, loss, optimizer, layers):
   """
   inputs: input data as numpy array
@@ -310,7 +309,41 @@ def build_model(inputs, output_size, neurons, activation_function, dropout, loss
   model.add(Dropout(dropout))
   model.add(Dense(units=output_size))
   model.add(Activation(activation_function))
-  model.compile(loss=loss, optimizer=optimizer, metrics=['mae'])
+  model.compile(loss=root_mean_squared_error, optimizer=optimizer, metrics=['mae', 'mse'])
   model.summary()
   return model
+
+def predict(model):
+  
+
+    btc_data = get_market_data("bitcoin", tag='BTC')
+    eth_data = get_market_data("ethereum", tag='ETH')
+        # Merges 2 coin data into 1 df
+    data = merge_data([btc_data,eth_data])
+
+    # Drops unneccessary columns
+    data = create_model_data(data)
+
+    samples=[]
+    
+    X_predict= create_inputs(data, True, samples,13, 2,prediction=True )
+
+    X_predict = to_array(X_predict, prediction=True)
+   # pdb.set_trace()
+    
+    import keras
+
+    if model:
+       prediction = model.predict(X_predict)
+   # load json and create model
+    json_file = open('model.json', 'r')
+    loaded_model_json = json_file.read()
+    json_file.close()
+    loaded_model = keras.models.model_from_json(loaded_model_json)
+    # load weights into new model
+    loaded_model.load_weights("model.h5")
+    
+    prediction = loaded_model.predict(X_predict)
+    print(prediction)
+    return X_predict
 

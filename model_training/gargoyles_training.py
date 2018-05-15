@@ -47,7 +47,7 @@ def worker(sys):
     if sys.argv[2] == 'new_csv':
         with open("crypto_training_rmse_%s.csv" %coin_predict,"wb") as data_file:
             writer=csv.writer(data_file)
-            writer.writerow(["neurons",	"layers",	"activation_function",	"optimizer",	"dropout",	"batch_size",	"epochs",	"input_window_len",	"output_window_len",	"keep_order",	"elapsed_time",	"loss",	"val_loss",	"mae",	"val_mae"])
+            writer.writerow(["neurons",	"layers",	"activation_function",	"optimizer",	"dropout",	"batch_size",	"epochs",	"input_window_len",	"output_window_len",	"keep_order",	"elapsed_time",	"loss(rmse)",	"val_loss(rmse)",	"mse",	"val_mse","mae","val_mae"])
             
     while(True):
         
@@ -57,16 +57,16 @@ def worker(sys):
             
             neurons, layers, activation_function,optimizer, dropout, batch_size, epochs, input_window_len, output_window_len, keep_order = choose_params()
             epochs = 25
-            # neurons = 17
-            # layers = 3
-            # activation_function = 'relu'
-            # optimizer = 'adam'
-            # dropout=0.4
-            # batch_size=80
-            # epochs = 10
-            # input_window_len = 7
-            # output_window_len = 2
-            # keep_order = False
+            neurons = 17
+            layers = 3
+            activation_function = 'relu'
+            optimizer = 'adam'
+            dropout=0.4
+            batch_size=80
+            epochs = 10
+            input_window_len = 7
+            output_window_len = 2
+            keep_order = False
             print ("==============Start Model===============")
             print("Neurons: %s"%neurons)
             print("Layers: %s"%layers)
@@ -110,10 +110,12 @@ def worker(sys):
       
             model_loss = btc_history.history['loss'][0]
             val_loss=btc_history.history['val_loss'][0]
+            mse = btc_history.history['mean_squared_error'][0]
+            val_mse = btc_history.history['val_mean_squared_error'][0]
             mae = btc_history.history['mean_absolute_error'][0]
             val_mae = btc_history.history['val_mean_absolute_error'][0]
             
-            row = [neurons, layers, activation_function,optimizer, dropout, batch_size, epochs, input_window_len, output_window_len, keep_order,formatted_time, model_loss, val_loss, mae, val_mae]
+            row = [neurons, layers, activation_function,optimizer, dropout, batch_size, epochs, input_window_len, output_window_len, keep_order,formatted_time, model_loss, val_loss, mse, val_mse, mae, val_mae]
             
             with open("crypto_training_rmse_%s.csv"%coin_predict,"a") as data_file:
                 writer=csv.writer(data_file)

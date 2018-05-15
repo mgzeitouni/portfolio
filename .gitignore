@@ -1,0 +1,10 @@
+credentials.py
+credentials.pyc
+
+
+*.pyc
+
+pricing_data/
+
+crypto_training*
+

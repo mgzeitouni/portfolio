@@ -2,7 +2,7 @@ absl-py==0.2.0
 asn1crypto==0.24.0
 astor==0.6.2
 attrs==17.4.0
-autobahn==18.4.1
+autobahn==20.12.3
 Automat==0.6.0
 backports.weakref==1.0.post1
 beautifulsoup4==4.6.0
